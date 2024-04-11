@@ -79,9 +79,24 @@ module.exports = function(parameters) {
   data = workaroundAwsObjectSerialization(data);
 
   var ast = Velocity.parse(template.toString());
+
+  const customMethodHandlers = [ 
+    { 
+      uid: 'parseInt', 
+      match: function({ property, context }) { 
+        return (typeof context === 'number') && property === 'parseInt'; 
+      }, 
+      resolve({ params }) { 
+        return parseInt(params[0]); 
+      }, 
+    } 
+  ];
+
   var config = {
     escape: false, // don't escape HTML
+    customMethodHandlers: customMethodHandlers
   };
+  
   return (new Velocity.Compile(ast, config)).render(data, null, true);
 };
 
