@@ -10,6 +10,7 @@
   "dependencies": {
     "clone": "^1.0.2",
     "JSONPath": "^0.11.2",
+    "moment-timezone": "^0.5.45",
     "velocityjs": "^2.0.6"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 var clone = require('clone');
 var Velocity = require('velocityjs');
 var jsonpath = workaroundJsonPath(require('JSONPath'));
+var moment = require('moment-timezone');
 
 module.exports = function(parameters) {
   parameters = clone(parameters || {});
@@ -73,6 +74,9 @@ module.exports = function(parameters) {
       urlDecode: decodeURIComponent,
       base64Encode: base64Encode,
       base64Decode: base64Decode,
+      time: {
+        epochMilliSecondsToFormatted: epochMilliSecondsToFormatted
+      }
     }
   };
 
@@ -170,6 +174,21 @@ function base64Encode(x) {
 function base64Decode(x) {
   return (new Buffer(x, 'base64')).toString();
 }
+
+function vtlToMomentFormat(format) {
+  return format?.replace("dd", "DD").replace("Z", "ZZ");
+}
+
+
+function epochMilliSecondsToFormatted(
+  time,
+  format,
+  timezone = "utc"
+) {
+  const vtlFormatConverted = vtlToMomentFormat(format);
+  return moment(time).tz(timezone).format(vtlFormatConverted);
+}
+
 
 // I recognize $util.escapeJavaScript as almost `escapeJSONString` and implemented so.
 // c.f. 24.3.2.2 Runtime Semantics: QuoteJSONString ( value )
